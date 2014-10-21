@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <set>
-#include <map>
 #include <list>
 #include <pthread.h>
 
@@ -20,7 +19,6 @@ namespace eventbus {
 
     public:
         int what;
-        std::map<std::string, std::string> mapData;
 
         // 是否完成，外界不要调用
         bool _done;
