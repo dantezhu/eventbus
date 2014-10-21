@@ -64,10 +64,10 @@ namespace eventbus {
         pthread_mutex_unlock(&m_visit_mutex);
     }
 
-    void EventBus::pushEvent(BaseEvent* event) {
+    void EventBus::pushEvent(BaseEvent* e) {
         pthread_mutex_lock(&m_visit_mutex);
 
-        m_events.push_back(event);
+        m_events.push_back(e);
 
         pthread_mutex_unlock(&m_visit_mutex);
     }
