@@ -70,7 +70,7 @@ namespace eventbus {
         pthread_mutex_lock(&m_visitMutex);
         for(auto it = m_events.begin(); it != m_events.end();)
         {
-            auto& event = (*it);
+            auto event = (*it);
             if (event->_done)
             {
                 it = m_events.erase(it);
@@ -88,8 +88,8 @@ namespace eventbus {
     void EventBus::clearEvents() {
         pthread_mutex_lock(&m_visitMutex);
 
-        for (auto& e: m_events) {
-            delete e;
+        for (auto& event: m_events) {
+            delete event;
         }
         m_events.clear();
 
