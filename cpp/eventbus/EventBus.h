@@ -47,7 +47,7 @@ namespace eventbus {
         std::list<BaseEvent*> m_events;
         std::set<IHandler*> m_handlers;
 
-        pthread_mutex_t m_visit_mutex;
+        pthread_mutex_t m_visitMutex;
     };
 
 }

@@ -9,33 +9,33 @@
 namespace eventbus {
 
     EventBus::EventBus() {
-        pthread_mutex_init(&m_visit_mutex, NULL);
+        pthread_mutex_init(&m_visitMutex, NULL);
     }
 
     EventBus::~EventBus() {
-        pthread_mutex_destroy(&m_visit_mutex);
+        pthread_mutex_destroy(&m_visitMutex);
         clearEvents();
         m_handlers.clear();
     }
 
     void EventBus::addHandler(IHandler* handler) {
-        pthread_mutex_lock(&m_visit_mutex);
+        pthread_mutex_lock(&m_visitMutex);
 
         m_handlers.insert(handler);
 
-        pthread_mutex_unlock(&m_visit_mutex);
+        pthread_mutex_unlock(&m_visitMutex);
     }
 
     void EventBus::delHandler(IHandler *handler) {
-        pthread_mutex_lock(&m_visit_mutex);
+        pthread_mutex_lock(&m_visitMutex);
 
         m_handlers.erase(handler);
 
-        pthread_mutex_unlock(&m_visit_mutex);
+        pthread_mutex_unlock(&m_visitMutex);
     }
 
     void EventBus::onEvent(BaseEvent* event) {
-        pthread_mutex_lock(&m_visit_mutex);
+        pthread_mutex_lock(&m_visitMutex);
 
         std::set<IHandler*> handlers=m_handlers;
 
@@ -45,29 +45,29 @@ namespace eventbus {
             }
         }
 
-        pthread_mutex_unlock(&m_visit_mutex);
+        pthread_mutex_unlock(&m_visitMutex);
     }
 
     void EventBus::pushEvent(BaseEvent* event) {
-        pthread_mutex_lock(&m_visit_mutex);
+        pthread_mutex_lock(&m_visitMutex);
 
         m_events.push_back(event);
 
-        pthread_mutex_unlock(&m_visit_mutex);
+        pthread_mutex_unlock(&m_visitMutex);
     }
 
     void EventBus::loopEvents() {
-        pthread_mutex_lock(&m_visit_mutex);
+        pthread_mutex_lock(&m_visitMutex);
         // 复制下来，防止访问冲突
         std::list<BaseEvent*> events = m_events;
-        pthread_mutex_unlock(&m_visit_mutex);
+        pthread_mutex_unlock(&m_visitMutex);
 
         for (auto& event: events) {
             onEvent(event);
             event->_done = true;
         }
 
-        pthread_mutex_lock(&m_visit_mutex);
+        pthread_mutex_lock(&m_visitMutex);
         for(auto it = m_events.begin(); it != m_events.end();)
         {
             auto& event = (*it);
@@ -82,18 +82,18 @@ namespace eventbus {
                 ++it;
             }
         }
-        pthread_mutex_unlock(&m_visit_mutex);
+        pthread_mutex_unlock(&m_visitMutex);
     }
 
     void EventBus::clearEvents() {
-        pthread_mutex_lock(&m_visit_mutex);
+        pthread_mutex_lock(&m_visitMutex);
 
         for (auto& e: m_events) {
             delete e;
         }
         m_events.clear();
 
-        pthread_mutex_unlock(&m_visit_mutex);
+        pthread_mutex_unlock(&m_visitMutex);
     }
 
 }
