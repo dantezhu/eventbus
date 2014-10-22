@@ -70,12 +70,13 @@ namespace eventbus {
         pthread_mutex_lock(&m_visitMutex);
         for(auto it = m_events.begin(); it != m_events.end();)
         {
-            auto event = (*it);
+            auto& event = (*it);
             if (event->_done)
             {
-                it = m_events.erase(it);
                 // event在用完了之后就要删掉
+                // event是引用的话，就一定要先delete再erase，否则event引用的位置就没了
                 delete event;
+                it = m_events.erase(it);
             }
             else
             {
