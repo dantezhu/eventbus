@@ -28,7 +28,7 @@ namespace eventbus {
     {
     public:
         virtual ~IHandler(){}
-        virtual void onEvent(BaseEvent* e)=0;
+        virtual void onEvent(BaseEvent* event)=0;
     };
 
     class EventBus
@@ -38,10 +38,10 @@ namespace eventbus {
         virtual ~EventBus();
         void addHandler(IHandler* handler);
         void delHandler(IHandler* handler);
-        void pushEvent(BaseEvent* e);
+        void pushEvent(BaseEvent* event);
         void loopEvents();
     private:
-        void onEvent(BaseEvent* e);
+        void onEvent(BaseEvent* event);
         void clearEvents();
     private:
         std::list<BaseEvent*> m_events;

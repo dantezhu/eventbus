@@ -34,24 +34,24 @@ namespace eventbus {
         pthread_mutex_unlock(&m_visit_mutex);
     }
 
-    void EventBus::onEvent(BaseEvent* e) {
+    void EventBus::onEvent(BaseEvent* event) {
         pthread_mutex_lock(&m_visit_mutex);
 
         std::set<IHandler*> handlers=m_handlers;
 
         for(auto& handler: handlers) {
             if (m_handlers.find(handler) != m_handlers.end()) {
-                handler->onEvent(e);
+                handler->onEvent(event);
             }
         }
 
         pthread_mutex_unlock(&m_visit_mutex);
     }
 
-    void EventBus::pushEvent(BaseEvent* e) {
+    void EventBus::pushEvent(BaseEvent* event) {
         pthread_mutex_lock(&m_visit_mutex);
 
-        m_events.push_back(e);
+        m_events.push_back(event);
 
         pthread_mutex_unlock(&m_visit_mutex);
     }
@@ -62,20 +62,20 @@ namespace eventbus {
         std::list<BaseEvent*> events = m_events;
         pthread_mutex_unlock(&m_visit_mutex);
 
-        for (auto& e: events) {
-            onEvent(e);
-            e->_done = true;
+        for (auto& event: events) {
+            onEvent(event);
+            event->_done = true;
         }
 
         pthread_mutex_lock(&m_visit_mutex);
         for(auto it = m_events.begin(); it != m_events.end();)
         {
-            auto e = (*it);
-            if (e->_done)
+            auto& event = (*it);
+            if (event->_done)
             {
                 it = m_events.erase(it);
                 // event在用完了之后就要删掉
-                delete e;
+                delete event;
             }
             else
             {
