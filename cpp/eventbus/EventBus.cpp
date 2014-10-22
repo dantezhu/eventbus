@@ -39,26 +39,10 @@ namespace eventbus {
 
         std::set<IHandler*> handlers=m_handlers;
 
-        while(1) {
-            std::set<IHandler*> tmp_handlers;
-
-            std::set_intersection(handlers.begin(), handlers.end(),
-                    m_handlers.begin(), m_handlers.end(),
-                    std::insert_iterator<std::set<IHandler*> >(tmp_handlers, tmp_handlers.begin()));
-
-            if (tmp_handlers.empty()) {
-                break;
+        for(auto& handler: handlers) {
+            if (m_handlers.find(handler) != m_handlers.end()) {
+                handler->onEvent(e);
             }
-
-            auto it = tmp_handlers.begin();
-            try{
-                (*it)->onEvent(e);
-            }
-            catch(...)
-            {
-            }
-
-            handlers.erase(*it);
         }
 
         pthread_mutex_unlock(&m_visit_mutex);
