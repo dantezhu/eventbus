@@ -40,17 +40,17 @@ namespace eventbus {
         std::set<IHandler*> handlers=m_handlers;
 
         while(1) {
-            std::set<IHandler*> tmp_handler;
+            std::set<IHandler*> tmp_handlers;
 
             std::set_intersection(handlers.begin(), handlers.end(),
                     m_handlers.begin(), m_handlers.end(),
-                    std::insert_iterator<std::set<IHandler*> >(tmp_handler, tmp_handler.begin()));
+                    std::insert_iterator<std::set<IHandler*> >(tmp_handlers, tmp_handlers.begin()));
 
-            if (tmp_handler.empty()) {
+            if (tmp_handlers.empty()) {
                 break;
             }
 
-            auto it = tmp_handler.begin();
+            auto it = tmp_handlers.begin();
             try{
                 (*it)->onEvent(e);
             }
