@@ -38,7 +38,7 @@ namespace eventbus {
         virtual ~EventBus();
         void addHandler(IHandler* handler);
         void delHandler(IHandler* handler);
-        void pushEvent(BaseEvent* event);
+        void postEvent(BaseEvent* event);
         void loopEvents();
     private:
         void onEvent(BaseEvent* event);

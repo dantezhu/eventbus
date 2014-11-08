@@ -48,7 +48,7 @@ namespace eventbus {
         pthread_mutex_unlock(&m_visitMutex);
     }
 
-    void EventBus::pushEvent(BaseEvent* event) {
+    void EventBus::postEvent(BaseEvent* event) {
         pthread_mutex_lock(&m_visitMutex);
 
         m_events.push_back(event);
