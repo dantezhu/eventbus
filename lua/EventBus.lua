@@ -1,3 +1,19 @@
+--=============================================================================
+--
+--     FileName: eventbus.lua
+--         Desc: 
+--
+--       Author: dantezhu
+--        Email: zny2008@gmail.com
+--     HomePage: http://www.vimer.cn
+--
+--      Created: 2014-11-09 18:50:32
+--      Version: 0.0.1
+--      History:
+--               0.0.1 | dantezhu | 2014-11-09 18:50:32 | init
+--
+--=============================================================================
+
 local function class(classname, super)
     local superType = type(super)
     local cls
@@ -59,21 +75,41 @@ local function class(classname, super)
 end
 
 
-local EventBus = require("EventBus")
+local M = class("EventBus")
 
-local GameHandler = class("GameHandler")
-
-
-function GameHandler:onEvent(event)
-    print (event.name)
-    bus:delHandler(handler2)
+function M:ctor()
+   self.handlers = {}
 end
 
-handler1 = GameHandler.new()
-handler2 = GameHandler.new()
-bus = EventBus.new()
+function M:addHandler(handler)
+    table.insert(self.handlers, handler)
+end
 
-bus:addHandler(handler1)
-bus:addHandler(handler2)
+function M:delHandler(handler)
+    for name,val in pairs(self.handlers) do
+        if val == handler then
+            self.handlers[name] = nil
+        end
+    end
+end
 
-bus:postEvent({name=1, value=2})
+function M:postEvent(event)
+    -- 直接就执行即可，因为lua一定在主线程
+
+    local tmpHandlers = self.handlers
+
+    for i,handler in pairs(tmpHandlers) do
+        local found = false
+        for tmpi,tmpval in pairs(self.handlers) do
+            if tmpval == handler then
+                -- 必须要找到才行
+                found = true
+            end
+        end
+        if found == true then
+            handler:onEvent(event)
+        end
+    end
+end
+
+return M
