@@ -14,9 +14,7 @@
 --
 --=============================================================================
 
-eventbus = eventbus or {}
-
-function eventbus.class(classname, super)
+local function class(classname, super)
     local superType = type(super)
     local cls
 
@@ -77,7 +75,7 @@ function eventbus.class(classname, super)
 end
 
 
-local M = eventbus.class("EventBus")
+local M = class("EventBus")
 
 function M:ctor()
    self.handlers = {}
@@ -114,4 +112,4 @@ function M:postEvent(event)
     end
 end
 
-eventbus.EventBus = M
+return M
