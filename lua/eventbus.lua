@@ -101,8 +101,17 @@ function M:postEvent(event)
     local tmpHandlers = self.handlers
 
     for i,handler in pairs(tmpHandlers) do
-        handler:onEvent(event)
+        local found = false
+        for tmpi,tmpval in pairs(self.handlers) do
+            if tmpval == handler then
+                -- 必须要找到才行
+                found = true
+            end
+        end
+        if found == true then
+            handler:onEvent(event)
+        end
     end
 end
 
-return M
+eventbus.EventBus = M
