@@ -96,7 +96,10 @@ end
 function M:postEvent(event)
     -- 直接就执行即可，因为lua一定在主线程
 
-    local tmpHandlers = self.handlers
+    local tmpHandlers = {}
+    for idx,val in ipairs(self.handlers) do
+        table.insert(tmpHandlers, val)
+    end
 
     for i,handler in pairs(tmpHandlers) do
         local found = false
