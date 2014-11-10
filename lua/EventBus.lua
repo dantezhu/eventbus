@@ -93,7 +93,7 @@ function M:delHandler(handler)
     end
 end
 
-function M:postEvent(event)
+function M:postEvent(...)
     -- 直接就执行即可，因为lua一定在主线程
 
     local tmpHandlers = {}
@@ -110,7 +110,7 @@ function M:postEvent(event)
             end
         end
         if found == true then
-            handler:onEvent(event)
+            handler:onEvent(...)
         end
     end
 end
