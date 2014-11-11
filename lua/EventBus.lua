@@ -97,13 +97,13 @@ function M:postEvent(...)
     -- 直接就执行即可，因为lua一定在主线程
 
     local tmpHandlers = {}
-    for idx,val in ipairs(self.handlers) do
+    for key,val in pairs(self.handlers) do
         table.insert(tmpHandlers, val)
     end
 
-    for i,handler in pairs(tmpHandlers) do
+    for key,handler in pairs(tmpHandlers) do
         local found = false
-        for tmpi,tmpval in pairs(self.handlers) do
+        for tmpkey,tmpval in pairs(self.handlers) do
             if tmpval == handler then
                 -- 必须要找到才行
                 found = true
