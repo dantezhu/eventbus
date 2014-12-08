@@ -31,7 +31,7 @@ namespace eventbus {
     }
 
     bool EventBus::isRunning() {
-        cocos2d::Director::getInstance()->getScheduler()->isScheduled(__FILE__, this);
+        return cocos2d::Director::getInstance()->getScheduler()->isScheduled(__FILE__, this);
     }
 
     void EventBus::addHandler(IHandler* handler) {
