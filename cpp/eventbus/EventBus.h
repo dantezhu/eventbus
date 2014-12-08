@@ -36,12 +36,17 @@ namespace eventbus {
     public:
         EventBus();
         virtual ~EventBus();
+
+        void start();
+        void stop();
+        bool isRunning();
+
         void addHandler(IHandler* handler);
         void delHandler(IHandler* handler);
         void postEvent(BaseEvent* event);
-        void loopEvents();
     private:
         void onEvent(BaseEvent* event);
+        void loopEvents();
         void clearEvents();
     private:
         std::list<BaseEvent*> m_events;

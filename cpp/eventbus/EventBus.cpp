@@ -1,6 +1,7 @@
 ﻿#include <algorithm>
 #include <iterator>
 #include "EventBus.h"
+#include "cocos2d.h"
 
 #if defined(_WIN32) || (defined(CC_TARGET_PLATFORM) && CC_TARGET_PLATFORM==CC_PLATFORM_WIN32)
 #pragma comment(lib,"pthreadVSE2.lib")
@@ -16,6 +17,21 @@ namespace eventbus {
         pthread_mutex_destroy(&m_visitMutex);
         clearEvents();
         m_handlers.clear();
+    }
+
+    void EventBus::start() {
+        auto func = [this](float dt){
+            loopEvents();
+        };
+        cocos2d::Director::getInstance()->getScheduler()->schedule(func, this, 0, false, __FILE__);
+    }
+
+    void EventBus::stop() {
+        cocos2d::Director::getInstance()->getScheduler()->unscheduleAllForTarget(this);
+    }
+
+    bool EventBus::isRunning() {
+        cocos2d::Director::getInstance()->getScheduler()->isScheduled(__FILE__, this);
     }
 
     void EventBus::addHandler(IHandler* handler) {
