@@ -44,10 +44,10 @@ namespace eventbus {
         void addHandler(IHandler* handler);
         void delHandler(IHandler* handler);
         void postEvent(BaseEvent* event);
+        void clearEvents();
     private:
         void onEvent(BaseEvent* event);
         void loopEvents();
-        void clearEvents();
     private:
         std::list<BaseEvent*> m_events;
         std::set<IHandler*> m_handlers;
