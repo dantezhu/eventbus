@@ -79,6 +79,40 @@ local M = class("EventBus")
 
 function M:ctor()
    self.handlers = {}
+   self.events = {}
+   self.sched_id = nil
+end
+
+function M:start()
+    self.sched_id = cc.Director:getInstance():getScheduler():scheduleScriptFunc(
+        function ()
+            self:loopEvents()
+        end,
+    0,false)
+end
+
+function M:stop()
+    if self.sched_id then
+        cc.Director:getInstance():getScheduler():unscheduleScriptEntry(self.sched_id)
+        self.sched_id = nil
+    end
+end
+
+function M:isRunning()
+    return self.sched_id ~= nil
+end
+
+function M:loopEvents()
+    local events = self.events
+    self.events = {}
+
+    for idx,event in ipairs(events) do
+        self:onEvent(event)
+    end
+end
+
+function M:clearEvents()
+    self.events = {}
 end
 
 function M:addHandler(handler)
@@ -93,9 +127,7 @@ function M:delHandler(handler)
     end
 end
 
-function M:postEvent(...)
-    -- 直接就执行即可，因为lua一定在主线程
-
+function M:onEvent(event)
     local tmpHandlers = {}
     for key,val in pairs(self.handlers) do
         table.insert(tmpHandlers, val)
@@ -110,9 +142,13 @@ function M:postEvent(...)
             end
         end
         if found == true then
-            handler:onEvent(...)
+            handler:onEvent(event)
         end
     end
+end
+
+function M:postEvent(event)
+    table.insert(self.events, event)
 end
 
 return M
