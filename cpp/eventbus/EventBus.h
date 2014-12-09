@@ -12,16 +12,12 @@ namespace eventbus {
     public:
         BaseEvent() {
             what = 0;
-            _done = false;
         }
         // 如果不标明虚函数，进行继承后delete会有bug
         virtual ~BaseEvent() {}
 
     public:
         int what;
-
-        // 是否完成，外界不要调用
-        bool _done;
     };
 
     class IHandler
