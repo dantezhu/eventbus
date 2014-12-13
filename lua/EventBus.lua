@@ -84,11 +84,13 @@ function M:ctor()
 end
 
 function M:start()
-    self.sched_id = cc.Director:getInstance():getScheduler():scheduleScriptFunc(
-        function ()
-            self:loopEvents()
-        end,
-    0,false)
+    if not self.sched_id then
+        self.sched_id = cc.Director:getInstance():getScheduler():scheduleScriptFunc(
+            function ()
+                self:loopEvents()
+            end,
+        0,false)
+    end
 end
 
 function M:stop()
