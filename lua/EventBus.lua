@@ -139,9 +139,9 @@ function M:onEvent(event)
         table.insert(tmpHandlers, val)
     end
 
-    for i,handler in ipairs(tmpHandlers) do
+    for i, handler in ipairs(tmpHandlers) do
         local found = false
-        for tmpi,tmpval in ipairs(self.handlers) do
+        for tmpi, tmpval in ipairs(self.handlers) do
             if tmpval == handler then
                 -- 必须要找到才行
                 found = true
