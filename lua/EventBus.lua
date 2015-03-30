@@ -80,12 +80,12 @@ local M = class("EventBus")
 function M:ctor()
    self.handlers = {}
    self.events = {}
-   self.sched_id = nil
+   self.schedEntry = nil
 end
 
 function M:start()
-    if not self.sched_id then
-        self.sched_id = cc.Director:getInstance():getScheduler():scheduleScriptFunc(
+    if not self.schedEntry then
+        self.schedEntry = cc.Director:getInstance():getScheduler():scheduleScriptFunc(
             function ()
                 self:loopEvents()
             end,
@@ -94,14 +94,14 @@ function M:start()
 end
 
 function M:stop()
-    if self.sched_id then
-        cc.Director:getInstance():getScheduler():unscheduleScriptEntry(self.sched_id)
-        self.sched_id = nil
+    if self.schedEntry then
+        cc.Director:getInstance():getScheduler():unscheduleScriptEntry(self.schedEntry)
+        self.schedEntry = nil
     end
 end
 
 function M:isRunning()
-    return self.sched_id ~= nil
+    return self.schedEntry ~= nil
 end
 
 function M:loopEvents()
@@ -122,22 +122,26 @@ function M:addHandler(handler)
 end
 
 function M:delHandler(handler)
-    for name,val in pairs(self.handlers) do
-        if val == handler then
-            self.handlers[name] = nil
+    local i = 1
+    while i <= #self.handlers do
+        local v = self.handlers[i]
+        if v == handler then
+            table.remove(self.handlers, i)
+        else
+            i = i + 1
         end
     end
 end
 
 function M:onEvent(event)
     local tmpHandlers = {}
-    for key,val in pairs(self.handlers) do
+    for i, val in ipairs(self.handlers) do
         table.insert(tmpHandlers, val)
     end
 
-    for key,handler in pairs(tmpHandlers) do
+    for i,handler in ipairs(tmpHandlers) do
         local found = false
-        for tmpkey,tmpval in pairs(self.handlers) do
+        for tmpi,tmpval in ipairs(self.handlers) do
             if tmpval == handler then
                 -- 必须要找到才行
                 found = true
